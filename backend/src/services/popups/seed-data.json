@@ -1,0 +1,55 @@
+[
+  {
+    "id": "anime-solo-demonslayer-gangdong",
+    "title": "나 혼자만 레벨업 & 귀멸의 칼날 한정 컬렉션 팝업 (강동)",
+    "subTitle": "강동아이파크더리버 3F CGV 앞 나혼렙 & 귀칼 2026 한정판 컬렉션카드 2종 단독 굿즈전",
+    "category": "flagship",
+    "categoryLabel": "DUCKJI 플래그십",
+    "status": "ongoing",
+    "statusLabel": "진행중",
+    "startDate": "2026-09-23",
+    "endDate": "2026-10-31",
+    "dDay": -18,
+    "location": "서울특별시 강동구 고덕비즈밸리로 51 강동아이파크더리버 3F",
+    "venueName": "강동아이파크더리버 3F CGV 앞 특설 팝업존",
+    "admission": "무료 입장 (자유 관람)",
+    "reservationType": "free",
+    "reservationLabel": "자유 입장 & 포토존",
+    "posterUrl": "/images/events/demon-slayer-final.png",
+    "galleryImages": [
+      "/images/events/demon-slayer-final.png",
+      "/images/events/solo-leveling-card.png",
+      "/images/events/jujutsu-kaisen.jpg"
+    ],
+    "description": "덕지(DUCKJI) 단독 기획 메가 플래그십 팝업! 강동아이파크더리버 3층 CGV 앞에서 글로벌 대세작 '나 혼자만 레벨업'과 전설적인 '귀멸의 칼날' 2026 한정판 홀로그램 컬렉션 카드가 단독 발매됩니다. 오직 현장에서만 만날 수 있는 리미티드 컬렉션을 경험하세요!",
+    "highlights": [
+      "나 혼자만 레벨업 & 귀멸의 칼날 2026 한정판 컬렉션 카드 현장 단독 발매",
+      "📸 전문 사진작가 상주 & 코스어 고화질 무료 스냅 촬영 지원",
+      "🖨️ 현장 즉석 사진 인화 서비스 (촬영 사진 고화질 포토카드/엽서 즉시 출력)",
+      "강동아이파크더리버 3F CGV 앞 특설 포토존 & 코스어 실시간 온/오프라인 인기 투표"
+    ],
+    "perks": [
+      "코스어 방문객 전원 무료 사진 촬영 & 즉석 인화 서비스 제공",
+      "5만원 이상 구매 시 한정판 렌티큘러 엽서 및 특제 쇼퍼백 지급"
+    ],
+    "operatingHours": "매일 10:00 ~ 22:00",
+    "officialUrl": "https://www.duckji.com",
+    "sourceName": "DUCKJI 공식 / 단독 프로모션",
+    "sourceUrl": "https://www.duckji.com",
+    "verifiedDate": "2026.10.01",
+    "isFeatured": true,
+    "isFlagship": true,
+    "isSponsored": true,
+    "isPartnerVerified": true,
+    "hasNativeBooking": false,
+    "hasNativeWaiting": false,
+    "waitingCount": 0,
+    "viewCount": 0,
+    "likeCount": 0,
+    "latitude": 37.5583,
+    "longitude": 127.1648,
+    "sortOrder": 0,
+    "isPublished": true,
+    "operationType": "own"
+  }
+]

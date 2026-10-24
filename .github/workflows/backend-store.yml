@@ -1,0 +1,39 @@
+# 백엔드 store 서비스: 이 서비스 코드나 공통 코드(shared)가 바뀔 때만 실행
+name: backend-store
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/src/services/store/**"
+      - "backend/src/shared/**"
+      - "backend/package.json"
+      - "backend/scripts/**"
+      - "package-lock.json"
+      - ".github/workflows/backend-store.yml"
+      - ".github/workflows/backend-service.yml"
+  pull_request:
+    paths:
+      - "backend/src/services/store/**"
+      - "backend/src/shared/**"
+      - "backend/package.json"
+      - "backend/scripts/**"
+      - "package-lock.json"
+      - ".github/workflows/backend-store.yml"
+      - ".github/workflows/backend-service.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: backend-store-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci-cd:
+    uses: ./.github/workflows/backend-service.yml
+    with:
+      service: store
+    secrets: inherit

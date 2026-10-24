@@ -1,0 +1,73 @@
+{
+  "expo": {
+    "name": "덕지",
+    "slug": "duckji",
+    "owner": "duckji_siaa",
+    "scheme": "duckji",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#631221",
+    "ios": {
+      "bundleIdentifier": "com.duckji.app",
+      "supportsTablet": false,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSLocationWhenInUseUsageDescription": "덕지순례 도장을 찍을 때 지금 위치가 장소 근처인지 확인해요.",
+        "NSCameraUsageDescription": "갤러리 글이나 견적 신청에 사진을 찍어 올릴 때 사용해요.",
+        "NSPhotoLibraryUsageDescription": "갤러리 글이나 견적 신청에 사진을 올릴 때 사용해요."
+      }
+    },
+    "android": {
+      "package": "com.duckji.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#BC272D",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "CAMERA"
+      ],
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 160,
+          "resizeMode": "contain",
+          "backgroundColor": "#631221"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "extraMavenRepos": [
+              "https://devrepo.kakao.com/nexus/content/groups/public/"
+            ],
+            "extraProguardRules": "-keep public class com.navercorp.nid.** { *; }"
+          }
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/android-icon-monochrome.png",
+          "color": "#BC272D",
+          "defaultChannel": "default"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "7ed7ec79-1043-4593-9301-bce211bda8b0"
+      }
+    }
+  }
+}

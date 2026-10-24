@@ -1,0 +1,87 @@
+# 프론트엔드 CI/CD: 검사·빌드 → (AWS 설정 후) S3 업로드 + CloudFront 캐시 무효화
+name: frontend
+
+on:
+  push:
+    branches: [main]
+    paths: ["frontend/**", "package-lock.json", ".github/workflows/frontend.yml"]
+  pull_request:
+    paths: ["frontend/**", "package-lock.json", ".github/workflows/frontend.yml"]
+  workflow_dispatch:
+  workflow_call: # deploy-all.yml 에서 호출
+
+permissions:
+  contents: read
+  id-token: write # AWS OIDC 로그인용
+
+concurrency:
+  group: frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci -w @duckji/frontend
+      - run: npm run typecheck -w @duckji/frontend
+      - run: npm run build -w @duckji/frontend
+        # 소셜 로그인·지도 키는 브라우저에 그대로 노출되는 공개값이라 기본값을 여기 둠 (저장소 변수가 있으면 그 값 우선)
+        env:
+          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ vars.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '159867532348-lmb8reeuvijnluci39pv1vdt09hgv017.apps.googleusercontent.com' }}
+          NEXT_PUBLIC_NAVER_CLIENT_ID: ${{ vars.NEXT_PUBLIC_NAVER_CLIENT_ID || 'NiwOXPJVmAMAGf0jRoda' }}
+          NEXT_PUBLIC_KAKAO_JS_KEY: ${{ vars.NEXT_PUBLIC_KAKAO_JS_KEY || 'd0caae8ab5d726cdc5a1a2d6ede60445' }}
+          NEXT_PUBLIC_APPLE_CLIENT_ID: ${{ vars.NEXT_PUBLIC_APPLE_CLIENT_ID }}
+          NEXT_PUBLIC_NAVER_MAP_CLIENT_ID: ${{ vars.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID || 'rfth20x8ub' }}
+          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ vars.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
+          NEXT_PUBLIC_TAROT_SECRET_KEY: ${{ vars.NEXT_PUBLIC_TAROT_SECRET_KEY }}
+
+  # AWS S3 업로드 + CloudFront 캐시 무효화
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.AWS_DEPLOY_ENABLED != 'false'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      # 빌드 결과를 Actions 저장소(artifact)에 올리지 않고 여기서 다시 빌드함 (저장 용량 한도에 걸리지 않게)
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci -w @duckji/frontend
+      - run: npm run build -w @duckji/frontend
+        # 소셜 로그인·지도 키는 브라우저에 그대로 노출되는 공개값이라 기본값을 여기 둠 (저장소 변수가 있으면 그 값 우선)
+        env:
+          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ vars.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '159867532348-lmb8reeuvijnluci39pv1vdt09hgv017.apps.googleusercontent.com' }}
+          NEXT_PUBLIC_NAVER_CLIENT_ID: ${{ vars.NEXT_PUBLIC_NAVER_CLIENT_ID || 'NiwOXPJVmAMAGf0jRoda' }}
+          NEXT_PUBLIC_KAKAO_JS_KEY: ${{ vars.NEXT_PUBLIC_KAKAO_JS_KEY || 'd0caae8ab5d726cdc5a1a2d6ede60445' }}
+          NEXT_PUBLIC_APPLE_CLIENT_ID: ${{ vars.NEXT_PUBLIC_APPLE_CLIENT_ID }}
+          NEXT_PUBLIC_NAVER_MAP_CLIENT_ID: ${{ vars.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID || 'rfth20x8ub' }}
+          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ vars.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
+          NEXT_PUBLIC_TAROT_SECRET_KEY: ${{ vars.NEXT_PUBLIC_TAROT_SECRET_KEY }}
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ap-northeast-2
+      - name: Upload to S3
+        run: |
+          BUCKET="${{ vars.FRONTEND_BUCKET || 'duckji-frontend-static' }}"
+          # 해시가 붙은 정적 파일은 1년 캐시, HTML 등 나머지는 매번 확인
+          aws s3 sync frontend/out "s3://${BUCKET}" --delete \
+            --exclude "*" --include "_next/static/*" \
+            --cache-control "public,max-age=31536000,immutable"
+          aws s3 sync frontend/out "s3://${BUCKET}" --delete \
+            --exclude "_next/static/*" \
+            --cache-control "public,max-age=0,must-revalidate"
+      - name: Invalidate CloudFront
+        if: vars.CLOUDFRONT_DISTRIBUTION_ID != ''
+        run: aws cloudfront create-invalidation --distribution-id "${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}" --paths "/*"

@@ -1,0 +1,14 @@
+{
+  "dailyDrawDP": 50,
+  "dailySingleCardDP": 20,
+  "dailyDiceDP": 20,
+  "founderMemberLimit": 1000,
+  "eventRewardActive": false,
+  "eventRewardNotice": {
+    "title": "덕지 타로 스탬프 완주 이벤트",
+    "description": "30칸 도장판을 완주하신 분들 중 추첨을 통해 한정판 덕지&덕순 솜인형 키링을 드립니다.",
+    "winnerCount": 10,
+    "period": "2026.10.01 ~ 2026.10.31"
+  },
+  "teaser2": false
+}

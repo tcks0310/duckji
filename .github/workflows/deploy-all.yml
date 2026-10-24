@@ -1,0 +1,36 @@
+# 전체 배포 (전부 다시 올릴 때): 백엔드 서비스 전부 → 프론트엔드
+# 백엔드 서비스 목록은 backend/src/services/ 폴더에서 자동으로 읽습니다.
+name: deploy-all
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  services:
+    runs-on: ubuntu-latest
+    outputs:
+      list: ${{ steps.list.outputs.list }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: list
+        run: echo "list=$(find backend/src/services -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort | jq -Rsc 'split("\n") | map(select(length > 0))')" >> "$GITHUB_OUTPUT"
+
+  backend:
+    needs: services
+    strategy:
+      fail-fast: false
+      matrix:
+        service: ${{ fromJson(needs.services.outputs.list) }}
+    uses: ./.github/workflows/backend-service.yml
+    with:
+      service: ${{ matrix.service }}
+    secrets: inherit
+
+  frontend:
+    needs: backend
+    uses: ./.github/workflows/frontend.yml
+    secrets: inherit

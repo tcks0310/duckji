@@ -1,0 +1,3 @@
+// 덕지 앱 판정 스크립트 (app/layout.tsx <head> 에 그대로 넣음, 화면이 그려지기 전에 실행)
+// UA DuckjiApp 또는 ?app=1(이 탭에서 기억) → <html class="is-app">. 앱에서 언어를 아직 안 골랐으면 휴대폰 언어(영·일·중)로
+export const APP_DETECT_SCRIPT = `(function(){try{var d=document.documentElement,q=location.search;if(/(?:^|[?&])app=1(?:&|$)/.test(q))sessionStorage.setItem('duckji_app','1');if(/DuckjiApp/.test(navigator.userAgent)||sessionStorage.getItem('duckji_app')==='1'){d.classList.add('is-app');if(!localStorage.getItem('dukji_preferred_lang')&&!/googtrans=/.test(document.cookie)){var l=(navigator.language||'ko').slice(0,2);if(l==='en'||l==='ja'||l==='zh'){document.cookie='googtrans=/ko/'+(l==='zh'?'zh-CN':l)+';path=/';}}}}catch(e){}})();`

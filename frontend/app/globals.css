@@ -1,0 +1,341 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 353 74% 13%;
+    --foreground: 40 50% 96%;
+
+    --card: 353 64% 17%;
+    --card-foreground: 40 50% 96%;
+
+    --popover: 353 70% 14%;
+    --popover-foreground: 40 50% 96%;
+
+    --primary: 42 90% 58%;
+    --primary-foreground: 353 80% 10%;
+
+    --secondary: 353 50% 22%;
+    --secondary-foreground: 40 50% 96%;
+
+    --muted: 353 45% 20%;
+    --muted-foreground: 353 25% 70%;
+
+    --accent: 42 85% 62%;
+    --accent-foreground: 353 80% 10%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 43 85% 55%;
+    --input: 43 75% 50%;
+    --ring: 42 90% 58%;
+
+    --radius: 0.75rem;
+  }
+
+  .light {
+    --background: 353 74% 13%;
+    --foreground: 40 50% 96%;
+
+    --card: 353 64% 17%;
+    --card-foreground: 40 50% 96%;
+
+    --popover: 353 70% 14%;
+    --popover-foreground: 40 50% 96%;
+
+    --primary: 42 90% 58%;
+    --primary-foreground: 353 80% 10%;
+
+    --secondary: 353 50% 22%;
+    --secondary-foreground: 40 50% 96%;
+
+    --muted: 353 45% 20%;
+    --muted-foreground: 353 25% 70%;
+
+    --accent: 42 85% 62%;
+    --accent-foreground: 353 80% 10%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 43 85% 55%;
+    --input: 43 75% 50%;
+    --ring: 42 90% 58%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    background-color: #631221;
+    background-image: none;
+    color: #fdf2f4;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    @apply antialiased selection:bg-amber-400 selection:text-black;
+  }
+}
+
+/* Custom Scrollbar - Burgundy Gold Style */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #4a0c15;
+}
+::-webkit-scrollbar-thumb {
+  background: #7d1729;
+  border-radius: 9999px;
+  border: 1px solid rgba(250, 213, 144, 0.35);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #961c32;
+}
+
+/* Glassmorphism helpers - Gold trimmed */
+.glass-panel {
+  background: rgba(45, 8, 14, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(245, 196, 81, 0.45);
+}
+
+.glass-card {
+  background: rgba(55, 10, 18, 0.68);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(245, 196, 81, 0.38);
+}
+
+.glass-card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-card-hover:hover {
+  border-color: rgba(253, 224, 71, 0.85);
+  box-shadow: 0 0 25px -5px rgba(245, 196, 81, 0.25);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   GLOBAL GOLD BORDER STYLES (모든 테두리에 금색 테두리 일괄 적용)
+   ========================================================================== */
+.border-zinc-950,
+.border-zinc-900,
+.border-zinc-900\/80,
+.border-zinc-900\/60,
+.border-zinc-900\/50 {
+  border-color: rgba(217, 119, 6, 0.38) !important;
+}
+
+.border-zinc-850,
+.border-zinc-800,
+.border-zinc-800\/90,
+.border-zinc-800\/80,
+.border-zinc-800\/70 {
+  border-color: rgba(245, 196, 81, 0.48) !important;
+}
+
+.border-zinc-800\/60,
+.border-zinc-800\/50,
+.border-zinc-800\/40,
+.border-zinc-800\/30 {
+  border-color: rgba(245, 196, 81, 0.35) !important;
+}
+
+.border-zinc-750,
+.border-zinc-700,
+.border-zinc-700\/90,
+.border-zinc-700\/80,
+.border-zinc-700\/70 {
+  border-color: rgba(250, 204, 21, 0.58) !important;
+}
+
+.border-zinc-700\/60,
+.border-zinc-700\/50,
+.border-zinc-700\/40 {
+  border-color: rgba(250, 204, 21, 0.42) !important;
+}
+
+.border-zinc-600,
+.border-zinc-500 {
+  border-color: rgba(251, 191, 36, 0.72) !important;
+}
+
+/* Hover States for Interactive Cards and Buttons */
+.hover\:border-zinc-700:hover,
+.hover\:border-zinc-600:hover,
+.hover\:border-zinc-500:hover,
+.group:hover .group-hover\:border-zinc-700,
+.group:hover .group-hover\:border-zinc-600 {
+  border-color: rgba(253, 224, 71, 0.85) !important;
+}
+
+/* White Semi-transparent Borders to Soft Gold */
+.border-white\/30,
+.border-white\/20,
+.border-white\/10,
+.border-white\/5 {
+  border-color: rgba(250, 204, 21, 0.38) !important;
+}
+
+/* Divider lines inside lists and cards */
+.divide-zinc-800 > :not([hidden]) ~ :not([hidden]),
+.divide-zinc-700 > :not([hidden]) ~ :not([hidden]),
+.divide-zinc-900 > :not([hidden]) ~ :not([hidden]) {
+  border-color: rgba(245, 196, 81, 0.3) !important;
+}
+
+/* 관리자 센터(/admin): 사이트의 금색 테두리 대신 차분한 회색 테두리 */
+.admin-calm {
+  --border: 240 4% 18%;
+  --input: 240 4% 26%;
+  --ring: 200 70% 45%;
+}
+.admin-calm .border-zinc-950,
+.admin-calm .border-zinc-950\/90,
+.admin-calm .border-zinc-950\/80,
+.admin-calm .border-zinc-950\/70,
+.admin-calm .border-zinc-950\/60,
+.admin-calm .border-zinc-950\/50,
+.admin-calm .border-zinc-950\/40,
+.admin-calm .border-zinc-950\/30,
+.admin-calm .border-zinc-900,
+.admin-calm .border-zinc-900\/90,
+.admin-calm .border-zinc-900\/80,
+.admin-calm .border-zinc-900\/70,
+.admin-calm .border-zinc-900\/60,
+.admin-calm .border-zinc-900\/50,
+.admin-calm .border-zinc-900\/40,
+.admin-calm .border-zinc-900\/30 { border-color: #27272a !important; }
+.admin-calm .border-zinc-850,
+.admin-calm .border-zinc-850\/90,
+.admin-calm .border-zinc-850\/80,
+.admin-calm .border-zinc-850\/70,
+.admin-calm .border-zinc-850\/60,
+.admin-calm .border-zinc-850\/50,
+.admin-calm .border-zinc-850\/40,
+.admin-calm .border-zinc-850\/30,
+.admin-calm .border-zinc-800,
+.admin-calm .border-zinc-800\/90,
+.admin-calm .border-zinc-800\/80,
+.admin-calm .border-zinc-800\/70,
+.admin-calm .border-zinc-800\/60,
+.admin-calm .border-zinc-800\/50,
+.admin-calm .border-zinc-800\/40,
+.admin-calm .border-zinc-800\/30 { border-color: #2f2f35 !important; }
+.admin-calm .border-zinc-750,
+.admin-calm .border-zinc-750\/90,
+.admin-calm .border-zinc-750\/80,
+.admin-calm .border-zinc-750\/70,
+.admin-calm .border-zinc-750\/60,
+.admin-calm .border-zinc-750\/50,
+.admin-calm .border-zinc-750\/40,
+.admin-calm .border-zinc-750\/30,
+.admin-calm .border-zinc-700,
+.admin-calm .border-zinc-700\/90,
+.admin-calm .border-zinc-700\/80,
+.admin-calm .border-zinc-700\/70,
+.admin-calm .border-zinc-700\/60,
+.admin-calm .border-zinc-700\/50,
+.admin-calm .border-zinc-700\/40,
+.admin-calm .border-zinc-700\/30 { border-color: #3f3f46 !important; }
+.admin-calm .border-zinc-600,
+.admin-calm .border-zinc-600\/90,
+.admin-calm .border-zinc-600\/80,
+.admin-calm .border-zinc-600\/70,
+.admin-calm .border-zinc-600\/60,
+.admin-calm .border-zinc-600\/50,
+.admin-calm .border-zinc-600\/40,
+.admin-calm .border-zinc-600\/30,
+.admin-calm .border-zinc-500,
+.admin-calm .border-zinc-500\/90,
+.admin-calm .border-zinc-500\/80,
+.admin-calm .border-zinc-500\/70,
+.admin-calm .border-zinc-500\/60,
+.admin-calm .border-zinc-500\/50,
+.admin-calm .border-zinc-500\/40,
+.admin-calm .border-zinc-500\/30 { border-color: #52525b !important; }
+.admin-calm .border-white\/30,
+.admin-calm .border-white\/20,
+.admin-calm .border-white\/10,
+.admin-calm .border-white\/5 { border-color: rgba(255, 255, 255, 0.12) !important; }
+.admin-calm .hover\:border-zinc-700:hover,
+.admin-calm .hover\:border-zinc-600:hover,
+.admin-calm .hover\:border-zinc-500:hover { border-color: #71717a !important; }
+.admin-calm .divide-zinc-800 > :not([hidden]) ~ :not([hidden]),
+.admin-calm .divide-zinc-700 > :not([hidden]) ~ :not([hidden]),
+.admin-calm .divide-zinc-900 > :not([hidden]) ~ :not([hidden]) { border-color: #27272a !important; }
+.admin-calm .divide-zinc-800\/60 > :not([hidden]) ~ :not([hidden]),
+.admin-calm .divide-zinc-800\/50 > :not([hidden]) ~ :not([hidden]),
+.admin-calm .divide-zinc-800\/40 > :not([hidden]) ~ :not([hidden]) { border-color: #27272a !important; }
+.admin-calm .border-zinc-400 { border-color: #a1a1aa !important; }
+.admin-calm .border-zinc-300 { border-color: #d4d4d8 !important; }
+.admin-calm .border-zinc-100 { border-color: #f4f4f5 !important; }
+
+/* 덕지순례 도장: 위에서 꾹 눌러 찍히는 느낌 (components/pilgrimage/stamp-mark.tsx) */
+@keyframes duckji-stamp-press {
+  0% { opacity: 0; transform: rotate(var(--stamp-rotate, -12deg)) scale(2.4); }
+  55% { opacity: 1; transform: rotate(var(--stamp-rotate, -12deg)) scale(0.88); }
+  75% { transform: rotate(var(--stamp-rotate, -12deg)) scale(1.06); }
+  100% { opacity: 1; transform: rotate(var(--stamp-rotate, -12deg)) scale(1); }
+}
+.duckji-stamp { transform: rotate(var(--stamp-rotate, -12deg)); }
+.duckji-stamp-press { animation: duckji-stamp-press 0.55s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .duckji-stamp-press { animation: none; }
+}
+
+/* 글자가 칸보다 길면 옆으로 흘려 보여 줌 (components/home/integrated-search-bar.tsx MarqueeText). --marquee-shift = 넘치는 길이 */
+@keyframes duckji-marquee {
+  0%, 15% { transform: translateX(0); }
+  85%, 100% { transform: translateX(var(--marquee-shift, 0)); }
+}
+.duckji-marquee { animation: duckji-marquee var(--marquee-time, 4s) ease-in-out infinite alternate; }
+@media (prefers-reduced-motion: reduce) {
+  .duckji-marquee { animation: none; }
+}
+
+/* 덕지 갤러리 배경: 위쪽 메뉴 띠의 와인색에서 아래로 갈수록 거의 검정 (hj 10-17 시안 B) */
+.gallery-wine {
+  background: linear-gradient(180deg, #2a0b13 0, #160609 420px, #120507 100%) !important;
+}
+/* hover:bg-… 같은 상태 클래스는 건드리지 않도록 클래스 이름이 bg-zinc-9… 로 시작하는 것만 */
+.gallery-wine main [class^="bg-zinc-9"],
+.gallery-wine main [class*=" bg-zinc-9"] {
+  background-color: #1f0a10 !important;
+}
+.gallery-wine main [class^="border-zinc-8"],
+.gallery-wine main [class*=" border-zinc-8"],
+.gallery-wine main [class^="border-zinc-9"],
+.gallery-wine main [class*=" border-zinc-9"] {
+  border-color: rgba(245, 196, 81, 0.22) !important;
+}
+
+/* 덕지 앱(웹뷰)에서 숨기는 것 (lib/app-mode.ts, <html class="is-app">) */
+.is-app .app-hide {
+  display: none !important;
+}
+/* 휴대폰 화면(덕지 앱 + 768px 미만 브라우저): 앱과 같은 모양 (홈에서만 상단 줄, 하단 탭)
+   phone-hide = 휴대폰 화면에서 숨김, app-nav-offset = 상단 줄 높이만큼 비워 둔 위 여백을 줄임 */
+.is-app .phone-hide {
+  display: none !important;
+}
+.is-app .app-nav-offset {
+  padding-top: 1rem !important;
+}
+@media (max-width: 767px) {
+  .phone-hide {
+    display: none !important;
+  }
+  .app-nav-offset {
+    padding-top: 1rem !important;
+  }
+  /* 브라우저 하단 탭(components/navigation/mobile-tab-bar.tsx) 높이만큼 아래 여백 */
+  html:not(.is-app) body {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom));
+  }
+}

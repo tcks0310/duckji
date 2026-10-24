@@ -1,0 +1,39 @@
+# 백엔드 b2b 서비스: 이 서비스 코드나 공통 코드(shared)가 바뀔 때만 실행
+name: backend-b2b
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/src/services/b2b/**"
+      - "backend/src/shared/**"
+      - "backend/package.json"
+      - "backend/scripts/**"
+      - "package-lock.json"
+      - ".github/workflows/backend-b2b.yml"
+      - ".github/workflows/backend-service.yml"
+  pull_request:
+    paths:
+      - "backend/src/services/b2b/**"
+      - "backend/src/shared/**"
+      - "backend/package.json"
+      - "backend/scripts/**"
+      - "package-lock.json"
+      - ".github/workflows/backend-b2b.yml"
+      - ".github/workflows/backend-service.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: backend-b2b-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci-cd:
+    uses: ./.github/workflows/backend-service.yml
+    with:
+      service: b2b
+    secrets: inherit

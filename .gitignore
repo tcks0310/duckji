@@ -1,0 +1,60 @@
+# dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+.next/
+out/
+
+# production
+build/
+dist/
+dist-lambda/
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# environment variables (Sensitive Credentials)
+.env
+.env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.local
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# scratch temporary extraction folder
+/scratch/
+
+# Office lock & temp files
+~$*
+*.tmp
+*.bak
+.uploads/
+
+# 내부 문서·예전 코드·인프라 설정은 이 레포에 올리지 않음
+/docs/
+/archive/
+/infra/
+/database/
+/prompts/
+*.tfvars
+*.tfstate
+*.tfstate.*
+.terraform/
+backend.hcl

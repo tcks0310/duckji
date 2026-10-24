@@ -1,0 +1,2 @@
+# Disable Vercel builds completely as the project is deployed to AWS S3 & CloudFront
+*

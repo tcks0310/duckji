@@ -1,0 +1,61 @@
+# 백엔드 서비스 공통 CI/CD (서비스별 워크플로에서 호출)
+# 검사·빌드 → (AWS 설정 후) 해당 서비스 Lambda 코드 교체
+# 나중에 ECS/EKS 로 옮기는 서비스는 이 워크플로 대신 컨테이너 빌드·배포(Jenkins, ArgoCD 등)로 바꾸면 됩니다.
+name: backend-service
+
+on:
+  workflow_call:
+    inputs:
+      service:
+        description: backend/src/services 아래 서비스 이름
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci -w @duckji/backend
+      - run: npm run typecheck -w @duckji/backend
+      - run: npm run build:lambda -w @duckji/backend -- ${{ inputs.service }}
+
+  # AWS 연결 후 저장소 변수 AWS_DEPLOY_ENABLED=true 로 켜면 동작
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.AWS_DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      # 빌드 결과를 Actions 저장소(artifact)에 올리지 않고 여기서 다시 빌드함 (저장 용량 한도에 걸리지 않게)
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci -w @duckji/backend
+      - run: npm run build:lambda -w @duckji/backend -- ${{ inputs.service }}
+      - name: Package
+        run: cd backend/dist-lambda/${{ inputs.service }} && zip -q ../../../${{ inputs.service }}.zip index.mjs
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ap-northeast-2
+      - name: Update Lambda code
+        run: |
+          # 새 서비스는 Lambda 가 만들어지기 전까지 코드 배포를 건너뜀 (실패로 두지 않음)
+          if ! aws lambda get-function --function-name "duckji-${{ inputs.service }}" >/dev/null 2>&1; then
+            echo "::notice::duckji-${{ inputs.service }} Lambda 가 아직 없습니다. Lambda 를 만든 뒤 이 워크플로를 다시 실행하세요."
+            exit 0
+          fi
+          aws lambda update-function-code \
+            --function-name "duckji-${{ inputs.service }}" \
+            --zip-file "fileb://${{ inputs.service }}.zip"

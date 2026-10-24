@@ -1,0 +1,19 @@
+{
+  "name": "duckji",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev:frontend": "npm run dev -w @duckji/frontend",
+    "dev:backend": "npm run dev -w @duckji/backend",
+    "build": "npm run build -w @duckji/frontend",
+    "build:all": "npm run build -w @duckji/backend && npm run build -w @duckji/frontend",
+    "build:frontend": "npm run build -w @duckji/frontend",
+    "build:backend": "npm run build -w @duckji/backend",
+    "build:lambda": "npm run build:lambda -w @duckji/backend",
+    "typecheck": "npm run typecheck -w @duckji/frontend && npm run typecheck -w @duckji/backend"
+  }
+}
