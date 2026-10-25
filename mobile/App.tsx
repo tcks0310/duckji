@@ -13,6 +13,8 @@ import { isInAppHost, isSiteUrl, openExternal } from "./src/links"
 import { nativeLogin, nativeProviders } from "./src/native-login"
 import { getPushDevice, linkOf, type PushDevice } from "./src/push"
 import { Onboarding } from "./src/Onboarding"
+import { GameScreen, isGameUrl } from "./src/GameScreen"
+import * as ScreenOrientation from "expo-screen-orientation"
 
 // 덕지 앱 껍데기: 아래 탭 5개, 탭마다 www.duckji.com 화면(웹뷰)
 // 웹은 UA 의 DuckjiApp 으로 앱인 걸 알고 상단 로그인·언어·노래 버튼, 푸터를 숨김 (frontend/lib/app-mode.ts)
@@ -41,6 +43,8 @@ const tabFor = (path: string): TabId =>
           : "home"
 
 SplashScreen.preventAutoHideAsync().catch(() => {})
+// 사이트 화면은 세로 고정, 게임 전체 화면(src/GameScreen.tsx)에서만 가로 허용
+ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP).catch(() => {})
 
 export default function App() {
   return (
@@ -64,6 +68,8 @@ function Shell() {
   const [onboarded, setOnboarded] = useState<boolean | null>(null)
   const [push, setPush] = useState<PushDevice | null>(null)
   const bridge = useMemo(() => bridgeJs(push), [push])
+  // 게임 전체 화면에 띄운 게임 주소 (없으면 닫힘)
+  const [gameUrl, setGameUrl] = useState<string | null>(null)
 
   useEffect(() => {
     AsyncStorage.getItem(ONBOARDED_KEY)
@@ -126,9 +132,9 @@ function Shell() {
     setActive(id)
   }
 
-  // 안드로이드 뒤로 가기: 탭 안에서 뒤로 → 홈 탭으로 → 앱 닫기
+  // 안드로이드 뒤로 가기: 탭 안에서 뒤로 → 홈 탭으로 → 앱 닫기 (게임 화면은 Modal 이 따로 받아 닫음)
   useEffect(() => {
-    if (Platform.OS !== "android") return
+    if (Platform.OS !== "android" || gameUrl) return
     const sub = BackHandler.addEventListener("hardwareBackPress", () => {
       if (canGoBack.current[active]) {
         views.current[active]?.goBack()
@@ -141,16 +147,21 @@ function Shell() {
       return false
     })
     return () => sub.remove()
-  }, [active])
+  }, [active, gameUrl])
 
   const onNav = (id: TabId) => (nav: WebViewNavigation) => {
     canGoBack.current[id] = nav.canGoBack
   }
 
   // 덕지·로그인·결제 화면만 앱 안에서, 나머지 사이트와 카드사 앱 호출은 밖으로
+  // 게임 주소(/games/<게임>/)는 탭 안에서 열지 않고 게임 전체 화면으로
   const onShouldStart = (req: ShouldStartLoadRequest) => {
     const url = req.url
     if (url.startsWith("about:") || url.startsWith("data:") || url.startsWith("blob:")) return true
+    if (req.isTopFrame !== false && isGameUrl(url)) {
+      setGameUrl(url)
+      return false
+    }
     if (/^https?:/i.test(url)) {
       if (req.isTopFrame === false || isInAppHost(url)) return true
       openExternal(url)
@@ -160,13 +171,17 @@ function Shell() {
     return false
   }
 
-  // 웹이 부탁한 일 (덕지 화면에서 온 것만): 지금은 소셜 로그인
+  // 웹이 부탁한 일 (덕지 화면에서 온 것만): 소셜 로그인, 게임 열기 { type: "game", path: "/games/<게임>/" }
   const onMessage = (id: TabId) => async (e: WebViewMessageEvent) => {
     if (!isSiteUrl(e.nativeEvent.url)) return
-    let msg: { type?: string; provider?: string; id?: string }
+    let msg: { type?: string; provider?: string; id?: string; path?: string }
     try {
       msg = JSON.parse(e.nativeEvent.data)
     } catch {
+      return
+    }
+    if (msg.type === "game" && typeof msg.path === "string" && isGameUrl(BASE_URL + msg.path)) {
+      setGameUrl(BASE_URL + msg.path)
       return
     }
     if (msg.type !== "login" || typeof msg.id !== "string" || typeof msg.provider !== "string") return
@@ -234,6 +249,8 @@ function Shell() {
           )
         })}
       </View>
+
+      <GameScreen url={gameUrl} onClose={() => setGameUrl(null)} />
 
       {onboarded === false && (
         <Onboarding
