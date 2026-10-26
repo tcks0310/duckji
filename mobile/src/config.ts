@@ -2,6 +2,8 @@ import type Feather from "@expo/vector-icons/Feather"
 
 // 앱이 띄우는 웹 주소. 앱 표시는 UA 의 DuckjiApp 으로 함
 export const BASE_URL = "https://www.duckji.com"
+// 게임 전용 주소 (src/GameScreen.tsx 가 이 주소의 게임만 전체 화면으로 띄움)
+export const GAMES_URL = "https://games.duckji.com"
 
 export type TabId = "home" | "popups" | "funding" | "store" | "gallery" | "play" | "my"
 

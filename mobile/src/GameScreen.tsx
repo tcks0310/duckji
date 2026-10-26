@@ -7,15 +7,19 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { WebView, type WebViewMessageEvent } from "react-native-webview"
 import type { ShouldStartLoadRequest } from "react-native-webview/lib/WebViewTypes"
 import Feather from "@expo/vector-icons/Feather"
-import { COLORS } from "./config"
+import { COLORS, GAMES_URL } from "./config"
 import { isSiteUrl, openExternal } from "./links"
 
 // 게임 전용 전체 화면: 사이트 화면 위에 새로 뜨고, 주소창·하단 탭·상태 표시줄 없이 게임만 보여 줌
-// 게임은 www.duckji.com/games/<게임>/ (빌드 결과물만 S3 에 있음, 소스는 게임 비공개 레포)
+// 게임은 https://games.duckji.com/<게임>/ (덕지 사이트와 따로인 게임 전용 주소, 빌드 결과물만 S3 에 있음, 소스는 게임 비공개 레포)
 // 로그인은 사이트 웹뷰와 같은 쿠키 저장소를 써서 그대로 이어짐. 이 화면에서만 가로로 돌릴 수 있음
 // 닫기: 왼쪽 위 X, 안드로이드 뒤로 가기, 또는 게임이 postMessage({type:"close"})
 
-export const isGameUrl = (url: string) => isSiteUrl(url) && /^https:\/\/[^/]+\/games\/[a-z0-9-]+(\/|$)/i.test(url)
+const GAMES_HOST = GAMES_URL.replace(/^https:\/\//, "")
+export const isGameUrl = (url: string) => {
+  const m = /^https:\/\/([^/:?#]+)(\/[a-z0-9-]+)?/i.exec(url)
+  return !!m && m[1].toLowerCase() === GAMES_HOST && !!m[2]
+}
 
 // 게임이 앱 안인 걸 알 수 있게 (게임 쪽 닫기 버튼 등)
 const bridgeJs = `window.DuckjiNative=Object.assign(window.DuckjiNative||{},{v:1,game:true});true;`

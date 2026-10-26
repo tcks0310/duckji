@@ -8,7 +8,7 @@ import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-cont
 import { WebView, type WebViewMessageEvent, type WebViewNavigation } from "react-native-webview"
 import type { ShouldStartLoadRequest } from "react-native-webview/lib/WebViewTypes"
 import Feather from "@expo/vector-icons/Feather"
-import { BASE_URL, COLORS, TABS, type TabId } from "./src/config"
+import { BASE_URL, COLORS, GAMES_URL, TABS, type TabId } from "./src/config"
 import { isInAppHost, isSiteUrl, openExternal } from "./src/links"
 import { nativeLogin, nativeProviders } from "./src/native-login"
 import { getPushDevice, linkOf, type PushDevice } from "./src/push"
@@ -154,7 +154,7 @@ function Shell() {
   }
 
   // 덕지·로그인·결제 화면만 앱 안에서, 나머지 사이트와 카드사 앱 호출은 밖으로
-  // 게임 주소(/games/<게임>/)는 탭 안에서 열지 않고 게임 전체 화면으로
+  // 게임 주소(games.duckji.com/<게임>/)는 탭 안에서 열지 않고 게임 전체 화면으로
   const onShouldStart = (req: ShouldStartLoadRequest) => {
     const url = req.url
     if (url.startsWith("about:") || url.startsWith("data:") || url.startsWith("blob:")) return true
@@ -171,7 +171,7 @@ function Shell() {
     return false
   }
 
-  // 웹이 부탁한 일 (덕지 화면에서 온 것만): 소셜 로그인, 게임 열기 { type: "game", path: "/games/<게임>/" }
+  // 웹이 부탁한 일 (덕지 화면에서 온 것만): 소셜 로그인, 게임 열기 { type: "game", path: "/<게임>/" }
   const onMessage = (id: TabId) => async (e: WebViewMessageEvent) => {
     if (!isSiteUrl(e.nativeEvent.url)) return
     let msg: { type?: string; provider?: string; id?: string; path?: string }
@@ -180,8 +180,8 @@ function Shell() {
     } catch {
       return
     }
-    if (msg.type === "game" && typeof msg.path === "string" && isGameUrl(BASE_URL + msg.path)) {
-      setGameUrl(BASE_URL + msg.path)
+    if (msg.type === "game" && typeof msg.path === "string" && msg.path.startsWith("/") && isGameUrl(GAMES_URL + msg.path)) {
+      setGameUrl(GAMES_URL + msg.path)
       return
     }
     if (msg.type !== "login" || typeof msg.id !== "string" || typeof msg.provider !== "string") return
